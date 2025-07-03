@@ -1,0 +1,90 @@
+{
+  "backend-api": {
+    "root": "apps/backend-api",
+    "sourceRoot": "apps/backend-api/src",
+    "projectType": "application",
+    "test:unit": {
+      "executor": "@nx/js:run-commands",
+      "options": {
+        "command": "npm run test:unit"
+      }
+    },
+    "test:integration": {
+      "executor": "@nx/js:run-commands",
+      "options": {
+        "command": "npm run test:integration"
+      }
+    },
+    "test": {
+      "executor": "@nx/js:run-commands",
+      "options": {
+        "command": "npm run test:all"
+      }
+    },
+    "email-verifier": { "root": "apps/email-verifier" },
+    "backend-background-jobs": { "root": "apps/backend-background-jobs" },
+    "client-app": { "root": "apps/client-app" },
+    "campaign-launcher": { "root": "apps/campaign-launcher" },
+    "email-warmup-launcher" : {"root" : "apps/email-warmup-launcher"}
+  },
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "defaultBase": "feature/local",
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "production": [
+      "default",
+      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/eslint.config.mjs",
+      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/src/test-setup.[jt]s"
+    ],
+    "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml", "{workspaceRoot}/.github/workflows/joy.sparkle.yml"]
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/js",
+      "options": {
+        "typecheck": { "targetName": "typecheck" },
+        "build": { "targetName": "build", "configName": "tsconfig.json" }
+      }
+    },
+    {
+      "plugin": "@nx/vite/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "testTargetName": "test",
+        "serveTargetName": "serve",
+        "devTargetName": "dev",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static",
+        "typecheckTargetName": "typecheck"
+      }
+    }
+  ],
+  "targetDefaults": {
+    "@nx/esbuild:esbuild": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    }
+  },
+  "generators": {
+    "@nx/react": {
+      "application": { "babel": true, "style": "tailwind", "linter": "eslint", "bundler": "vite" },
+      "component": { "style": "tailwind" },
+      "library": { "style": "tailwind", "linter": "eslint" }
+    }
+  },
+  "cli": {
+    "defaultBase": "development"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "test", "e2e"]
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "compilerOptions": {
+    "jsx": "react",
+    "baseUrl": "."
+  },
+  "references": [
+    { "path": "./apps/backend-api/tsconfig.json" },
+    { "path": "./apps/backend-background-jobs" },
+    { "path": "./apps/inbox-reader" },
+    { "path": "./apps/email-verifier" },
+    { "path": "./apps/email-warmup-launcher" },
+    { "path": "./libs/backend-shared/tsconfig.json" },
+    { "path": "./libs/frontend-shared" },
+    { "path": "./libs/common-shared" }
+  ]
+}
